@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Logo from "../components/Logo";
-import PersonIcon from "../components/PersonIcon";
 
+// מסך פתיחה. המערכת סגורה: אין הרשמה עצמית של מועמדים,
+// והכניסה היחידה היא כניסת צוות לנציגים מורשים.
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-10">
@@ -11,32 +12,18 @@ export default function HomePage() {
           <Logo className="w-72 max-w-[85%]" />
         </div>
 
-        {/* בחירת מסלול: בחור | בחורה - באייקון בצבע הלוגו */}
-        <div className="grid grid-cols-2 gap-4">
-          <Link
-            href="/form/male"
-            className="card flex flex-col items-center gap-2 py-8 transition hover:border-rose hover:shadow-lg"
-          >
-            <PersonIcon className="h-12 w-12 text-rose" />
-            <span className="text-xl font-semibold text-roseDark">בחור</span>
-          </Link>
-          <Link
-            href="/form/female"
-            className="card flex flex-col items-center gap-2 py-8 transition hover:border-rose hover:shadow-lg"
-          >
-            <PersonIcon className="h-12 w-12 text-rose" />
-            <span className="text-xl font-semibold text-roseDark">בחורה</span>
-          </Link>
-        </div>
+        <Link
+          href="/admin"
+          className="card flex flex-col items-center gap-2 py-8 transition hover:border-rose hover:shadow-lg"
+        >
+          <span className="text-5xl leading-none">🔐</span>
+          <span className="text-xl font-semibold text-roseDark">כניסת צוות</span>
+          <span className="text-sm text-ink/50">למורשים בלבד</span>
+        </Link>
 
-        <div className="mt-8">
-          <Link
-            href="/admin"
-            className="text-sm text-ink/50 underline-offset-4 hover:underline"
-          >
-            כניסת צוות
-          </Link>
-        </div>
+        <p className="mt-8 text-sm leading-relaxed text-ink/50">
+          המערכת מיועדת לצוות הנציגים בלבד.
+        </p>
       </div>
     </main>
   );

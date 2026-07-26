@@ -7,7 +7,7 @@ import CandidateCard from "../../components/CandidateCard";
 import CandidateEditor from "../../components/CandidateEditor";
 import MatchesPanel from "../../components/MatchesPanel";
 import TasksPanel from "../../components/TasksPanel";
-import QuestionsEditor from "../../components/QuestionsEditor";
+import ShidduchQuestions from "../../components/ShidduchQuestions";
 import RepsManager from "../../components/RepsManager";
 import LogViewer from "../../components/LogViewer";
 import PopupEditor from "../../components/PopupEditor";
@@ -144,7 +144,7 @@ export default function AdminPage() {
   const term = search.trim().toLowerCase();
   const matchSearch = (c) =>
     !term ||
-    [c.fullName, c.location, c.community, c.work, c.degree, c.phone]
+    [c.fullName, c.firstName, c.lastName, c.community, c.cardText]
       .some((v) => (v || "").toString().toLowerCase().includes(term));
 
   // 5 המועמדים האחרונים שהצטרפו (מבין אלה שהמשתמש/ת רשאי/ת לראות) - לפי מועד ההוספה.
@@ -175,6 +175,8 @@ export default function AdminPage() {
     tabs.push({ id: "matches", icon: "💞", label: "התאמות" });
     tabs.push({ id: "tasks", icon: "📝", label: "משימות" });
   }
+  // "איזה שאלות אני שואל בשידוך" - כל הצוות קורא, המנהלת בלבד עורכת
+  tabs.push({ id: "questions", icon: "❓", label: "שאלות בשידוך" });
   if (isAdmin) tabs.push({ id: "manage", icon: "⚙️", label: "ניהול" });
 
   return (
@@ -204,7 +206,7 @@ export default function AdminPage() {
               <input
                 className="field-input flex-1"
                 type="search"
-                placeholder="🔍 חיפוש מועמד (שם, מקום, עדה...)"
+                placeholder="🔍 חיפוש מועמד (שם, עדה...)"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -238,7 +240,6 @@ export default function AdminPage() {
                     <CandidateCard
                       key={c.id}
                       candidate={c}
-                      openQuestions={data.openQuestions}
                       reps={data.reps}
                       canEdit={canEditOf(c)}
                       canSeeSensitive={canSeeSensitiveOf(c)}
@@ -268,8 +269,7 @@ export default function AdminPage() {
                       <CandidateCard
                         key={c.id}
                         candidate={c}
-                        openQuestions={data.openQuestions}
-                        reps={data.reps}
+                          reps={data.reps}
                         canEdit={canEditOf(c)}
                         canSeeSensitive={canSeeSensitiveOf(c)}
                         currentRepId={user.repId || "admin"}
@@ -294,7 +294,6 @@ export default function AdminPage() {
                     <CandidateCard
                       key={c.id}
                       candidate={c}
-                      openQuestions={data.openQuestions}
                       reps={data.reps}
                       canEdit={isAdmin}
                       canSeeSensitive={isAdmin}
@@ -310,6 +309,7 @@ export default function AdminPage() {
           </div>
         )}
 
+        {tab === "questions" && <ShidduchQuestions data={data} isAdmin={isAdmin} />}
         {tab === "matches" && <MatchesPanel data={data} user={user} readOnly={myReadOnly} />}
         {tab === "tasks" && <TasksPanel data={data} user={user} readOnly={myReadOnly} />}
         {tab === "manage" && isAdmin && (
@@ -317,7 +317,6 @@ export default function AdminPage() {
             <RepsManager data={data} />
             <LogViewer data={data} />
             <PopupEditor data={data} />
-            <QuestionsEditor data={data} />
           </div>
         )}
       </main>
@@ -325,7 +324,6 @@ export default function AdminPage() {
       {addingCand && (
         <Modal title="הוספת מועמד" onClose={() => setAddingCand(false)}>
           <CandidateEditor
-            openQuestions={data.openQuestions}
             reps={data.reps}
             isAdmin={isAdmin}
             onSave={handleAdd}

@@ -5,12 +5,12 @@ import Modal from "./Modal";
 import CandidateEditor from "./CandidateEditor";
 import Recorder from "./Recorder";
 import { PERSONAL_FIELDS, genderLabel } from "../lib/questions";
-import { toHebrewDate } from "../lib/dates";
+
 import { copyClean, downloadPdf } from "../lib/export";
 import { displayRep } from "../lib/store";
 
 // כרטיס מועמד: תצוגה מקוצרת + תצוגה מורחבת (טופס מלא).
-export default function CandidateCard({ candidate, openQuestions, reps, canEdit, canSeeSensitive, currentRepId, isAdmin = false, onUpdate, onDelete }) {
+export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitive, currentRepId, isAdmin = false, onUpdate, onDelete }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -19,7 +19,7 @@ export default function CandidateCard({ candidate, openQuestions, reps, canEdit,
   const rep = displayRep(candidate, reps);
 
   async function handleCopy() {
-    await copyClean(candidate, openQuestions, canSeeSensitive);
+    await copyClean(candidate, canSeeSensitive);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
@@ -51,7 +51,7 @@ export default function CandidateCard({ candidate, openQuestions, reps, canEdit,
           {editing ? (
             <CandidateEditor
               initial={candidate}
-              openQuestions={openQuestions}
+
               reps={reps}
               isAdmin={isAdmin}
               onSave={(form) => onUpdate(candidate.id, form).then(() => setEditing(false))}
@@ -64,12 +64,9 @@ export default function CandidateCard({ candidate, openQuestions, reps, canEdit,
                 <img src={candidate.photo} alt={candidate.fullName} className="h-32 w-32 rounded-2xl object-cover" />
               )}
               <div className="space-y-2">
-                {PERSONAL_FIELDS.filter((f) => f.key !== "phone" || canSeeSensitive).map((f) => (
+                {PERSONAL_FIELDS.map((f) => (
                   <p key={f.key} className="text-lg">
                     <span className="font-bold">{genderLabel(f, candidate.gender)}:</span> {candidate[f.key]}
-                    {f.key === "birthDate" && candidate[f.key] && (
-                      <span className="text-roseDark"> · {toHebrewDate(candidate[f.key])}</span>
-                    )}
                   </p>
                 ))}
                 <p className="text-lg"><span className="font-bold">שיוך נציג:</span> {rep ? `${rep.name} (${rep.institution})` : "ללא שיוך"}</p>
@@ -91,23 +88,19 @@ export default function CandidateCard({ candidate, openQuestions, reps, canEdit,
                 </div>
               )}
 
-              <div className="space-y-4 border-t border-sand pt-3">
-                {(openQuestions || []).map((q) => (
-                  <div key={q.key}>
-                    <p className="mb-1.5 text-base font-bold text-roseDark">{genderLabel(q, candidate.gender)}</p>
+              {/* כרטיס המועמד - הטקסט שנכתב ו/או הצילום שהועלה */}
+              {(candidate.cardText || candidate.cardImage) && (
+                <div className="space-y-3 border-t border-sand pt-3">
+                  <p className="text-base font-bold text-roseDark">🗂️ כרטיס מועמד</p>
+                  {candidate.cardText && (
                     <div className="whitespace-pre-wrap rounded-2xl bg-blush/50 p-4 text-lg leading-relaxed text-ink/90">
-                      {candidate.answers?.[q.key]}
+                      {candidate.cardText}
                     </div>
-                  </div>
-                ))}
-              </div>
-
-              {candidate.references?.length > 0 && (
-                <div className="border-t border-sand pt-3">
-                  <p className="mb-1 text-base font-bold text-roseDark">אנשי קשר</p>
-                  {candidate.references.map((r, i) => (
-                    <p key={i} className="text-lg text-ink/90">{i + 1}. {r.name} — {r.relation} {canSeeSensitive ? `(${r.phone})` : ""}</p>
-                  ))}
+                  )}
+                  {candidate.cardImage && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={candidate.cardImage} alt="כרטיס מועמד" className="w-full rounded-2xl border border-sand object-contain" />
+                  )}
                 </div>
               )}
 
@@ -125,7 +118,7 @@ export default function CandidateCard({ candidate, openQuestions, reps, canEdit,
               {/* ייצוא נתונים */}
               <div className="flex flex-wrap gap-2 border-t border-sand pt-3">
                 <button className="btn-soft" onClick={handleCopy}>📋 {copied ? "הועתק!" : "העתקה ללוח"}</button>
-                <button className="btn-soft" onClick={() => downloadPdf(candidate, openQuestions, canSeeSensitive)}>📄 הורדת PDF</button>
+                <button className="btn-soft" onClick={() => downloadPdf(candidate, canSeeSensitive)}>📄 הורדת PDF</button>
                 {canEdit && <button className="btn-soft" onClick={() => setEditing(true)}>✏️ עריכה</button>}
                 {onDelete && (
                   <button

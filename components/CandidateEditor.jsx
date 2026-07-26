@@ -1,41 +1,36 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import DateField from "./DateField";
 import { compressImage } from "../lib/image";
-import { PERSONAL_FIELDS, REFERENCES_QUESTION, genderLabel } from "../lib/questions";
+import { PERSONAL_FIELDS, genderLabel, buildFullName, splitFullName } from "../lib/questions";
 import { STORAGE_PREFIX } from "../lib/config";
 
 // טופס להוספה/עריכה של מועמד על ידי נציג או מנהלת.
-export default function CandidateEditor({ initial, openQuestions, reps, onSave, onCancel, isAdmin = false }) {
+export default function CandidateEditor({ initial, reps, onSave, onCancel, isAdmin = false }) {
   // טיוטה אוטומטית - גם למועמד חדש וגם בעריכת מועמד קיים (לכל מועמד מפתח נפרד)
   const isNew = !initial || !initial.id;
   const DRAFT_KEY = isNew ? `${STORAGE_PREFIX}draft_admin_new` : `${STORAGE_PREFIX}draft_edit_${initial.id}`;
 
   const [form, setForm] = useState(() => {
+    // כרטיס שנוצר לפני פיצול השם - משלימים שם פרטי/משפחה מתוך fullName
+    const legacy = initial && !initial.firstName && !initial.lastName ? splitFullName(initial.fullName) : {};
     const base = {
       gender: "male",
+      firstName: "",
+      lastName: "",
       fullName: "",
-      location: "",
       age: "",
-      birthDate: "",
       height: "",
       community: "",
-      work: "",
-      degree: "",
-      parentsWork: "",
-      phone: "",
       photo: "",
-      answers: {},
-      references: [
-        { name: "", relation: "", phone: "" },
-        { name: "", relation: "", phone: "" },
-      ],
+      cardText: "",
+      cardImage: "",
       assignedRep: "",
       sensitiveInfo: "",
       restricted: false,
       hiddenFrom: [],
       ...initial,
+      ...legacy,
     };
     if (typeof window !== "undefined") {
       try {
@@ -64,7 +59,8 @@ export default function CandidateEditor({ initial, openQuestions, reps, onSave, 
   async function handleSave() {
     setSaving(true);
     try {
-      await onSave(form);
+      // fullName נגזר מהשם הפרטי והמשפחה, כדי שכל שאר המערכת תמשיך לעבוד מולו
+      await onSave({ ...form, fullName: buildFullName(form) });
       clearDraft(); // נמחק רק אחרי שמירה מוצלחת
     } catch (e) {
       alert("השמירה נכשלה. בדקי חיבור לאינטרנט ונסי שוב — המידע שהקלדת נשמר ולא אבד.");
@@ -80,22 +76,14 @@ export default function CandidateEditor({ initial, openQuestions, reps, onSave, 
   function set(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
   }
-  function setAnswer(key, value) {
-    setForm((f) => ({ ...f, answers: { ...f.answers, [key]: value } }));
-  }
-  function setRef(i, key, value) {
-    setForm((f) => ({
-      ...f,
-      references: f.references.map((r, idx) => (idx === i ? { ...r, [key]: value } : r)),
-    }));
-  }
-  async function onPhoto(e) {
+  // העלאת תמונה לשדה נתון (תמונת המועמד או צילום כרטיס המועמד)
+  async function onImage(key, e) {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      set("photo", await compressImage(file));
+      set(key, await compressImage(file));
     } catch (err) {
-      /* תמונה לא תקינה - מתעלמים */
+      alert("לא הצלחנו לקרוא את הקובץ. אפשר להעלות תמונה (צילום מסך או צילום של הכרטיס), או לכתוב את הכרטיס בשדה הטקסט.");
     }
   }
 
@@ -112,21 +100,17 @@ export default function CandidateEditor({ initial, openQuestions, reps, onSave, 
         {PERSONAL_FIELDS.map((f) => (
           <div key={f.key}>
             <label className="field-label">{genderLabel(f, form.gender)}</label>
-            {f.type === "date" ? (
-              <DateField value={form[f.key]} onChange={(v) => set(f.key, v)} />
-            ) : (
-              <input
-                className="field-input"
-                type={f.type}
-                value={form[f.key] || ""}
-                onChange={(e) => set(f.key, e.target.value)}
-              />
-            )}
+            <input
+              className="field-input"
+              type={f.type}
+              value={form[f.key] || ""}
+              onChange={(e) => set(f.key, e.target.value)}
+            />
           </div>
         ))}
         <div>
           <label className="field-label">📷 תמונה</label>
-          <input className="field-input" type="file" accept="image/*" onChange={onPhoto} />
+          <input className="field-input" type="file" accept="image/*" onChange={(e) => onImage("photo", e)} />
           {form.photo && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={form.photo} alt="תמונה" className="mt-3 h-24 w-24 rounded-2xl object-cover" />
@@ -134,30 +118,31 @@ export default function CandidateEditor({ initial, openQuestions, reps, onSave, 
         </div>
       </section>
 
+      {/* כרטיס המועמד - אפשר לכתוב אותו כטקסט, להעלות צילום שלו, או שניהם */}
       <section className="space-y-4">
-        <h3 className="font-semibold text-ink">💬 שאלות</h3>
-        {(openQuestions || []).map((q) => (
-          <div key={q.key}>
-            <label className="field-label">{genderLabel(q, form.gender)}</label>
-            <textarea
-              className="field-input min-h-[80px]"
-              value={form.answers?.[q.key] || ""}
-              onChange={(e) => setAnswer(q.key, e.target.value)}
-            />
-          </div>
-        ))}
-      </section>
-
-      <section className="space-y-4">
-        <h3 className="font-semibold text-ink">🌈 אנשי קשר</h3>
-        <p className="text-xs text-ink/60">{REFERENCES_QUESTION}</p>
-        {form.references.map((r, i) => (
-          <div key={i} className="space-y-2 rounded-2xl bg-blush/40 p-3">
-            <input className="field-input" placeholder="שם" value={r.name} onChange={(e) => setRef(i, "name", e.target.value)} />
-            <input className="field-input" placeholder="מה הם בשבילך" value={r.relation} onChange={(e) => setRef(i, "relation", e.target.value)} />
-            <input className="field-input" placeholder="טלפון" value={r.phone} onChange={(e) => setRef(i, "phone", e.target.value)} />
-          </div>
-        ))}
+        <h3 className="font-semibold text-ink">🗂️ כרטיס מועמד</h3>
+        <div>
+          <label className="field-label">כתיבת הכרטיס</label>
+          <textarea
+            className="field-input min-h-[160px]"
+            placeholder="אפשר לכתוב כאן את כרטיס המועמד במלואו."
+            value={form.cardText || ""}
+            onChange={(e) => set("cardText", e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="field-label">📎 העלאת כרטיס (צילום או צילום מסך)</label>
+          <input className="field-input" type="file" accept="image/*" onChange={(e) => onImage("cardImage", e)} />
+          {form.cardImage && (
+            <div className="mt-3 space-y-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={form.cardImage} alt="כרטיס מועמד" className="w-full rounded-2xl border border-sand object-contain" />
+              <button type="button" className="btn-soft !py-1.5 text-sm" onClick={() => set("cardImage", "")}>
+                הסרת הכרטיס שהועלה
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
       <section className="space-y-4">
