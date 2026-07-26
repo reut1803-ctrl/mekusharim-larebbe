@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Modal from "./Modal";
+import PhoneActions from "./PhoneActions";
 import { addMatch, updateMatch, deleteMatch, addMatchUpdate, displayRep } from "../lib/store";
 import { copyClean, downloadPdf, shareClean } from "../lib/export";
 
@@ -120,20 +121,23 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
   // כרטיס מועמד עם שם, טלפון (למי שמורשה) ופעולות מהירות - כרטיס מיוצא מלא.
   function candidateCard(cand) {
     if (!cand) return null;
-    const canSee = user.role === "admin" || managedByMe(cand);
-    const phone = (cand.phone || "").replace(/[^0-9]/g, "");
+    const canSee = user.role === "admin" || user.role === "viewer" || managedByMe(cand);
     return (
       <div className="flex-1 rounded-2xl bg-sand/40 p-3">
         <p className="font-bold text-ink">{cand.fullName}</p>
         {canSee && cand.phone ? (
-          <a href={`tel:${phone}`} className="mb-2 mt-0.5 block text-sm text-ink/70">📞 {cand.phone}</a>
+          <div className="mb-2 mt-1">
+            <PhoneActions phone={cand.phone} name={cand.firstName || cand.fullName} small />
+          </div>
         ) : (
-          <p className="mb-2 mt-0.5 text-xs text-ink/40">הטלפון דרך הנציג/ה</p>
+          <p className="mb-2 mt-0.5 text-xs text-ink/40">
+            {cand.phone ? "הטלפון דרך הנציג/ה" : "לא הוזן טלפון למועמד/ת"}
+          </p>
         )}
         <div className="flex flex-wrap gap-1.5">
-          <button className="btn-soft !px-2.5 !py-1 text-xs" onClick={async () => { await copyClean(cand, data.openQuestions, canSee); flash("הכרטיס הועתק ✓"); }}>📋 העתקת כרטיס</button>
-          <button className="btn-soft !px-2.5 !py-1 text-xs" onClick={() => downloadPdf(cand, data.openQuestions, canSee)}>📄 הורד</button>
-          <button className="btn-soft !px-2.5 !py-1 text-xs" onClick={async () => { const r = await shareClean(cand, data.openQuestions, canSee); if (r === "copied") flash("הועתק ללוח לשיתוף ✓"); }}>📤 שתף</button>
+          <button className="btn-soft !px-2.5 !py-1 text-xs" onClick={async () => { await copyClean(cand, canSee); flash("הכרטיס הועתק ✓"); }}>📋 העתקת כרטיס</button>
+          <button className="btn-soft !px-2.5 !py-1 text-xs" onClick={() => downloadPdf(cand, canSee)}>📄 הורד</button>
+          <button className="btn-soft !px-2.5 !py-1 text-xs" onClick={async () => { const r = await shareClean(cand, canSee); if (r === "copied") flash("הועתק ללוח לשיתוף ✓"); }}>📤 שתף</button>
         </div>
       </div>
     );

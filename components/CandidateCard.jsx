@@ -4,7 +4,8 @@ import { useState } from "react";
 import Modal from "./Modal";
 import CandidateEditor from "./CandidateEditor";
 import Recorder from "./Recorder";
-import { PERSONAL_FIELDS, genderLabel } from "../lib/questions";
+import PhoneActions from "./PhoneActions";
+import { visibleFields, genderLabel } from "../lib/questions";
 
 import { copyClean, downloadPdf } from "../lib/export";
 import { displayRep } from "../lib/store";
@@ -64,7 +65,7 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
                 <img src={candidate.photo} alt={candidate.fullName} className="h-32 w-32 rounded-2xl object-cover" />
               )}
               <div className="space-y-2">
-                {PERSONAL_FIELDS.map((f) => (
+                {visibleFields(false).map((f) => (
                   <p key={f.key} className="text-lg">
                     <span className="font-bold">{genderLabel(f, candidate.gender)}:</span> {candidate[f.key]}
                   </p>
@@ -72,7 +73,15 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
                 <p className="text-lg"><span className="font-bold">שיוך נציג:</span> {rep ? `${rep.name} (${rep.institution})` : "ללא שיוך"}</p>
               </div>
 
-              {/* הטלפון האישי של המועמד מוסתר משאר הנציגים. ליצירת קשר - דרך הנציג שלו. */}
+              {/* הטלפון של המועמד - גלוי לנציג/ה שמייצג/ת אותו ולמנהלת, ליצירת קשר מיידית */}
+              {canSeeSensitive && candidate.phone && (
+                <div className="rounded-2xl bg-blush/60 p-4">
+                  <p className="mb-2 text-base font-semibold text-roseDark">יצירת קשר עם {candidate.fullName}</p>
+                  <PhoneActions phone={candidate.phone} name={candidate.firstName || candidate.fullName} />
+                </div>
+              )}
+
+              {/* למי שאינו הנציג/ה של המועמד - הפנייה לנציג/ה שמייצג/ת אותו */}
               {!canSeeSensitive && rep && (
                 <div className="rounded-2xl bg-blush/60 p-4">
                   <p className="mb-2 text-base font-semibold text-roseDark">לפרטים ולבירורים — דרך הנציג: {rep.name}</p>

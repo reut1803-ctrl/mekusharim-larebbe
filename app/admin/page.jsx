@@ -144,7 +144,7 @@ export default function AdminPage() {
   const term = search.trim().toLowerCase();
   const matchSearch = (c) =>
     !term ||
-    [c.fullName, c.firstName, c.lastName, c.community, c.cardText]
+    [c.fullName, c.firstName, c.lastName, c.community, c.phone, c.cardText]
       .some((v) => (v || "").toString().toLowerCase().includes(term));
 
   // 5 המועמדים האחרונים שהצטרפו (מבין אלה שהמשתמש/ת רשאי/ת לראות) - לפי מועד ההוספה.
@@ -206,7 +206,7 @@ export default function AdminPage() {
               <input
                 className="field-input flex-1"
                 type="search"
-                placeholder="🔍 חיפוש מועמד (שם, עדה...)"
+                placeholder="🔍 חיפוש מועמד (שם, עדה, טלפון...)"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
