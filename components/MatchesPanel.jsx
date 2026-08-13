@@ -146,12 +146,12 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-roseDark">💞 הצעות פעילות ({visibleMatches.length})</h2>
+        <h2 className="text-lg font-bold text-brandDark">💞 הצעות פעילות ({visibleMatches.length})</h2>
         {!readOnly && <button className="btn-soft" onClick={() => { setFormError(""); setAdding(true); }}>+ הצעת התאמה</button>}
       </div>
 
       {notice && (
-        <div className="rounded-2xl bg-rose/10 px-4 py-2 text-center text-sm font-semibold text-roseDark">{notice}</div>
+        <div className="rounded-2xl bg-brand/10 px-4 py-2 text-center text-sm font-semibold text-brandDark">{notice}</div>
       )}
 
       {visibleMatches.length === 0 && <p className="text-sm text-ink/50">אין הצעות עדיין.</p>}
@@ -177,13 +177,13 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
               <>
                 {/* תגית מטפל/ת + שחרור שיוך */}
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="rounded-full bg-rose/10 px-3 py-1 text-sm font-semibold text-roseDark">
+                  <span className="rounded-full bg-brand/10 px-3 py-1 text-sm font-semibold text-brandDark">
                     👤 {handler ? `מטופל/ת ע"י ${handler}` : "לא משויך"}
                   </span>
                   {canManageAssign && (
                     handler
                       ? <button className="text-xs text-ink/50" onClick={() => updateMatch(m.id, { handledBy: "" })}>✕ שחרור שיוך</button>
-                      : (!readOnly && user.repId && <button className="text-xs font-semibold text-roseDark" onClick={() => updateMatch(m.id, { handledBy: user.repId })}>+ קבל/י שיוך</button>)
+                      : (!readOnly && user.repId && <button className="text-xs font-semibold text-brandDark" onClick={() => updateMatch(m.id, { handledBy: user.repId })}>+ קבל/י שיוך</button>)
                   )}
                 </div>
 
@@ -199,8 +199,8 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
                         className="flex shrink-0 flex-col items-center gap-1"
                         style={{ width: "5rem" }}
                       >
-                        <span className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${active ? "bg-roseDark text-white" : "bg-sand text-ink/50"}`}>{i + 1}</span>
-                        <span className={`text-center text-[11px] leading-tight ${active ? "font-bold text-roseDark" : "text-ink/50"}`}>{s}</span>
+                        <span className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${active ? "bg-brandDark text-white" : "bg-sand text-ink/50"}`}>{i + 1}</span>
+                        <span className={`text-center text-[11px] leading-tight ${active ? "font-bold text-brandDark" : "text-ink/50"}`}>{s}</span>
                       </button>
                     );
                   })}
@@ -224,10 +224,10 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
 
                 {/* אנשי קשר - הנציגים האחרים בלבד, עם כפתורי חיוג */}
                 <div className="space-y-2 border-t border-sand pt-3">
-                  <p className="text-sm font-bold text-roseDark">אנשי קשר להתאמה</p>
+                  <p className="text-sm font-bold text-brandDark">אנשי קשר להתאמה</p>
                   {others.length === 0 && <p className="text-xs text-ink/40">אין נציגים נוספים ליצירת קשר בהתאמה זו.</p>}
                   {others.map((e) => (
-                    <div key={e.rep.id} className="rounded-2xl bg-blush/40 p-2.5">
+                    <div key={e.rep.id} className="rounded-2xl bg-parchment/40 p-2.5">
                       <p className="text-sm font-semibold text-ink">{e.rep.name}</p>
                       <p className="mb-1 text-xs text-ink/50">{e.roles.join(" · ")}{e.rep.institution ? ` · ${e.rep.institution}` : ""}</p>
                       {contactButtons(e.rep, man, woman)}
@@ -237,11 +237,11 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
 
                 {/* יומן מעקב - עדכונים והערות */}
                 <div className="space-y-2 border-t border-sand pt-3">
-                  <p className="text-sm font-bold text-roseDark">📌 עדכונים והערות</p>
+                  <p className="text-sm font-bold text-brandDark">📌 עדכונים והערות</p>
                   {(m.updates && m.updates.length > 0) ? (
                     <div className="space-y-1.5">
                       {[...m.updates].sort((a, b) => (b.at || "").localeCompare(a.at || "")).map((u, i) => (
-                        <div key={i} className="rounded-xl bg-cream px-3 py-2">
+                        <div key={i} className="rounded-xl bg-ivory px-3 py-2">
                           <p className="whitespace-pre-wrap text-sm text-ink/90">{u.text}</p>
                           <p className="mt-0.5 text-xs text-ink/50">{u.by} · {fmtDate(u.at)}</p>
                         </div>
@@ -266,7 +266,7 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
 
                 {!readOnly && (
                   <div className="border-t border-sand pt-2">
-                    <button className="btn-soft text-roseDark !px-2.5 !py-1 text-xs" onClick={() => { if (confirm("למחוק התאמה?")) deleteMatch(m.id); }}>🗑️ מחיקת התאמה</button>
+                    <button className="btn-soft text-brandDark !px-2.5 !py-1 text-xs" onClick={() => { if (confirm("למחוק התאמה?")) deleteMatch(m.id); }}>🗑️ מחיקת התאמה</button>
                   </div>
                 )}
               </>
@@ -280,7 +280,7 @@ export default function MatchesPanel({ data, user, readOnly = false }) {
           <div className="space-y-4">
             <p className="text-sm text-ink/60">בחרו בחור ובחורה והציעו התאמה ביניהם</p>
             {formError && (
-              <div className="rounded-2xl bg-rose/10 px-4 py-3 text-sm font-medium text-roseDark">{formError}</div>
+              <div className="rounded-2xl bg-brand/10 px-4 py-3 text-sm font-medium text-brandDark">{formError}</div>
             )}
             <div className="grid grid-cols-2 gap-3">
               <div>

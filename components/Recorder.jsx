@@ -134,22 +134,22 @@ export default function Recorder({ candidateId, repId, canRecord = false }) {
   }
 
   return (
-    <div className="rounded-2xl bg-blush/40 p-4">
-      <p className="mb-2 text-base font-bold text-roseDark">🎙️ הקלטות קוליות</p>
+    <div className="rounded-2xl bg-parchment/40 p-4">
+      <p className="mb-2 text-base font-bold text-brandDark">🎙️ הקלטות קוליות</p>
 
-      {error && <p className="mb-2 text-sm font-medium text-roseDark">{error}</p>}
+      {error && <p className="mb-2 text-sm font-medium text-brandDark">{error}</p>}
 
       {/* רשימת הקלטות */}
       {list.length === 0 && <p className="mb-2 text-sm text-ink/50">אין הקלטות עדיין.</p>}
       <div className="space-y-2">
         {list.map((r, i) => (
-          <div key={r.id} className="rounded-xl bg-white p-2">
+          <div key={r.id} className="rounded-xl bg-surface p-2">
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-ink/70">
                 🎧 הקלטה {i + 1} · {fmt(r.durationSec || 0)}
                 {r.createdAt ? ` · ${new Date(r.createdAt).toLocaleDateString("he-IL")}` : ""}
               </span>
-              {canRecord && <button className="text-roseDark" onClick={() => remove(r.id)}>🗑️</button>}
+              {canRecord && <button className="text-brandDark" onClick={() => remove(r.id)}>🗑️</button>}
             </div>
             {urls[r.id] ? (
               // eslint-disable-next-line jsx-a11y/media-has-caption

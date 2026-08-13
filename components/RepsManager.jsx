@@ -46,7 +46,7 @@ export default function RepsManager({ data }) {
     <div className="space-y-3">
       {/* סיסמת מנהלת */}
       <div className="card space-y-2">
-        <h2 className="text-lg font-bold text-roseDark">🔐 סיסמת מנהלת</h2>
+        <h2 className="text-lg font-bold text-brandDark">🔐 סיסמת מנהלת</h2>
         <p className="text-xs text-ink/60">זו הסיסמה שאיתה נכנסים כמנהלת. אפשר לשנות אותה כאן.</p>
         <input className="field-input" value={adminPw} onChange={(e) => setAdminPw(e.target.value)} placeholder="סיסמת מנהלת" />
         <button className="btn-primary" onClick={saveAdminPw}>{adminSaved ? "נשמר!" : "שמירת סיסמה"}</button>
@@ -54,17 +54,17 @@ export default function RepsManager({ data }) {
 
       {/* סיסמת צפייה בלבד */}
       <div className="card space-y-2">
-        <h2 className="text-lg font-bold text-roseDark">👁️ סיסמת צפייה בלבד</h2>
+        <h2 className="text-lg font-bold text-brandDark">👁️ סיסמת צפייה בלבד</h2>
         <p className="text-xs text-ink/60">מי שנכנס עם סיסמה זו יוכל לצפות במועמדים בלבד — בלי לערוך, להוסיף או למחוק.</p>
         <input className="field-input" value={viewerPw} onChange={(e) => setViewerPw(e.target.value)} placeholder="סיסמת צפייה" />
         <button className="btn-primary" onClick={saveViewerPw}>{viewerSaved ? "נשמר!" : "שמירת סיסמה"}</button>
       </div>
 
-      <h2 className="text-lg font-bold text-roseDark">👥 ניהול נציגים</h2>
+      <h2 className="text-lg font-bold text-brandDark">👥 ניהול נציגים</h2>
 
       {/* הוספת נציג - תמיד זמין למנהלת, בראש הרשימה */}
-      <div className="card space-y-2 border-2 border-rose/40">
-        <p className="text-base font-bold text-roseDark">➕ הוספת נציג חדש</p>
+      <div className="card space-y-2 border-2 border-brand/40">
+        <p className="text-base font-bold text-brandDark">➕ הוספת נציג חדש</p>
         <input className="field-input" value={name} onChange={(e) => setName(e.target.value)} placeholder="שם הנציג" />
         <input className="field-input" value={institution} onChange={(e) => setInstitution(e.target.value)} placeholder="שם המוסד" />
         <input className="field-input" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="טלפון (לשיחה / SMS / וואטסאפ)" />
@@ -93,17 +93,17 @@ export default function RepsManager({ data }) {
 
             {/* מצב חופשה / קריאה בלבד */}
             <label className={`flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-medium ${r.readOnly ? "bg-amber-100 text-amber-800" : "bg-sand/60 text-ink/70"}`}>
-              <input type="checkbox" checked={!!r.readOnly} onChange={(e) => updateRep(r.id, { readOnly: e.target.checked })} className="h-5 w-5 accent-rose" />
+              <input type="checkbox" checked={!!r.readOnly} onChange={(e) => updateRep(r.id, { readOnly: e.target.checked })} className="h-5 w-5 accent-brand" />
               🔒 חופשה / קריאה בלבד (הנציג/ה יוכל/תוכל לצפות אך לא לערוך)
             </label>
 
             {/* ניהול משותף - רשימה מכווצת עם חץ להרחבה */}
-            <div className="rounded-2xl bg-blush/40 p-3">
+            <div className="rounded-2xl bg-parchment/40 p-3">
               <button
                 className="flex w-full items-center justify-between text-right"
                 onClick={() => setOpenRepId(coverOpen ? null : r.id)}
               >
-                <span className="text-sm font-semibold text-roseDark">
+                <span className="text-sm font-semibold text-brandDark">
                   🤝 ניהול משותף{coverCount > 0 ? ` (${coverCount})` : ""}
                 </span>
                 <span className="text-sm text-ink/40">{coverOpen ? "▲" : "▼"}</span>
@@ -121,7 +121,7 @@ export default function RepsManager({ data }) {
                           type="checkbox"
                           checked={coveredBy.includes(o.id)}
                           onChange={(e) => toggleCover(o.id, e.target.checked)}
-                          className="h-4 w-4 accent-rose"
+                          className="h-4 w-4 accent-brand"
                         />
                         {o.name}
                       </label>
@@ -131,7 +131,7 @@ export default function RepsManager({ data }) {
               )}
             </div>
 
-            <button className="btn-soft text-roseDark" onClick={() => { if (confirm(`למחוק את הנציג "${r.name}"?\nהמועמדים שלו לא יימחקו — הם יעברו ל"ללא שיוך נציג".`)) deleteRep(r.id); }}>🗑️ מחיקה</button>
+            <button className="btn-soft text-brandDark" onClick={() => { if (confirm(`למחוק את הנציג "${r.name}"?\nהמועמדים שלו לא יימחקו — הם יעברו ל"ללא שיוך נציג".`)) deleteRep(r.id); }}>🗑️ מחיקה</button>
           </div>
         );
       })}

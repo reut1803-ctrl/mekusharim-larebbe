@@ -33,13 +33,13 @@ export default function PopupEditor({ data }) {
 
   return (
     <div className="space-y-3">
-      <h2 className="text-lg font-bold text-roseDark">📢 חלונית הודעות וטיפים</h2>
+      <h2 className="text-lg font-bold text-brandDark">📢 חלונית הודעות וטיפים</h2>
       <p className="text-xs text-ink/60">חלונית שקופצת לנציגים פעם אחת ביום. אפשר להפעיל/לכבות, לערוך את ההודעה ולהוסיף טיפים שיתחלפו.</p>
 
       <div className="card space-y-3">
         {/* מתג הפעלה/כיבוי */}
         <label className="flex items-center gap-3">
-          <input type="checkbox" className="h-5 w-5 accent-rose" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
+          <input type="checkbox" className="h-5 w-5 accent-brand" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
           <span className="font-semibold text-ink">{enabled ? "החלונית מופעלת ✅" : "החלונית כבויה"}</span>
         </label>
 
@@ -53,7 +53,7 @@ export default function PopupEditor({ data }) {
           {tips.map((t, i) => (
             <div key={i} className="mb-2 flex items-start gap-2">
               <textarea className="field-input min-h-[56px]" value={t} onChange={(e) => setTip(i, e.target.value)} placeholder={`טיפ ${i + 1}`} />
-              <button className="btn-soft !px-3 text-roseDark" onClick={() => removeTip(i)}>🗑️</button>
+              <button className="btn-soft !px-3 text-brandDark" onClick={() => removeTip(i)}>🗑️</button>
             </div>
           ))}
           <button className="btn-soft" onClick={addTip}>➕ הוספת טיפ</button>

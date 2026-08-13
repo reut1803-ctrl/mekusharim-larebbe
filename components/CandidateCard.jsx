@@ -34,7 +34,7 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
             // eslint-disable-next-line @next/next/no-img-element
             <img src={candidate.photo} alt={candidate.fullName} className="h-14 w-14 rounded-2xl object-cover" />
           ) : (
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blush text-2xl">👤</div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-parchment text-2xl">👤</div>
           )}
           <div className="min-w-0 flex-1">
             <p className="truncate font-semibold text-ink">{candidate.fullName}</p>
@@ -75,16 +75,16 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
 
               {/* הטלפון של המועמד - גלוי לנציג/ה שמייצג/ת אותו ולמנהלת, ליצירת קשר מיידית */}
               {canSeeSensitive && candidate.phone && (
-                <div className="rounded-2xl bg-blush/60 p-4">
-                  <p className="mb-2 text-base font-semibold text-roseDark">יצירת קשר עם {candidate.fullName}</p>
+                <div className="rounded-2xl bg-parchment/60 p-4">
+                  <p className="mb-2 text-base font-semibold text-brandDark">יצירת קשר עם {candidate.fullName}</p>
                   <PhoneActions phone={candidate.phone} name={candidate.firstName || candidate.fullName} />
                 </div>
               )}
 
               {/* למי שאינו הנציג/ה של המועמד - הפנייה לנציג/ה שמייצג/ת אותו */}
               {!canSeeSensitive && rep && (
-                <div className="rounded-2xl bg-blush/60 p-4">
-                  <p className="mb-2 text-base font-semibold text-roseDark">לפרטים ולבירורים — דרך הנציג: {rep.name}</p>
+                <div className="rounded-2xl bg-parchment/60 p-4">
+                  <p className="mb-2 text-base font-semibold text-brandDark">לפרטים ולבירורים — דרך הנציג: {rep.name}</p>
                   {rep.phone ? (
                     <div className="flex flex-wrap gap-2">
                       <a className="btn-soft" href={`tel:${rep.phone}`}>📞 שיחה</a>
@@ -100,9 +100,9 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
               {/* כרטיס המועמד - הטקסט שנכתב ו/או הצילום שהועלה */}
               {(candidate.cardText || candidate.cardImage) && (
                 <div className="space-y-3 border-t border-sand pt-3">
-                  <p className="text-base font-bold text-roseDark">🗂️ כרטיס מועמד</p>
+                  <p className="text-base font-bold text-brandDark">🗂️ כרטיס מועמד</p>
                   {candidate.cardText && (
-                    <div className="whitespace-pre-wrap rounded-2xl bg-blush/50 p-4 text-lg leading-relaxed text-ink/90">
+                    <div className="whitespace-pre-wrap rounded-2xl bg-parchment/50 p-4 text-lg leading-relaxed text-ink/90">
                       {candidate.cardText}
                     </div>
                   )}
@@ -115,8 +115,8 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
 
               {/* מידע רגיש - גלוי רק לנציג ולמנהלת */}
               {canSeeSensitive && (
-                <div className="rounded-2xl bg-rose/10 p-3">
-                  <p className="mb-1 text-sm font-semibold text-roseDark">🔒 מידע רגיש (לנציג ולמנהלת בלבד)</p>
+                <div className="rounded-2xl bg-brand/10 p-3">
+                  <p className="mb-1 text-sm font-semibold text-brandDark">🔒 מידע רגיש (לנציג ולמנהלת בלבד)</p>
                   <p className="whitespace-pre-wrap text-sm text-ink/80">{candidate.sensitiveInfo || "—"}</p>
                 </div>
               )}
@@ -131,7 +131,7 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
                 {canEdit && <button className="btn-soft" onClick={() => setEditing(true)}>✏️ עריכה</button>}
                 {onDelete && (
                   <button
-                    className="btn-soft text-roseDark"
+                    className="btn-soft text-brandDark"
                     onClick={() => { if (confirm(`⚠️ למחוק לצמיתות את "${candidate.fullName}"?\nהפעולה אינה ניתנת לשחזור.`)) { onDelete(candidate.id); setOpen(false); } }}
                   >🗑️ מחיקה</button>
                 )}

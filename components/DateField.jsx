@@ -46,8 +46,8 @@ export default function DateField({ value, onChange }) {
   return (
     <div className="space-y-2">
       <div className="flex gap-2">
-        <button type="button" onClick={() => setMode("hebrew")} className={`rounded-xl px-3 py-1.5 text-sm font-medium ${mode === "hebrew" ? "bg-rose text-white" : "bg-blush text-roseDark"}`}>עברי</button>
-        <button type="button" onClick={() => setMode("gregorian")} className={`rounded-xl px-3 py-1.5 text-sm font-medium ${mode === "gregorian" ? "bg-rose text-white" : "bg-blush text-roseDark"}`}>לועזי</button>
+        <button type="button" onClick={() => setMode("hebrew")} className={`rounded-xl px-3 py-1.5 text-sm font-medium ${mode === "hebrew" ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}>עברי</button>
+        <button type="button" onClick={() => setMode("gregorian")} className={`rounded-xl px-3 py-1.5 text-sm font-medium ${mode === "gregorian" ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}>לועזי</button>
       </div>
 
       {mode === "hebrew" ? (
@@ -75,7 +75,7 @@ export default function DateField({ value, onChange }) {
       )}
 
       {value && (
-        <p className="mt-1 text-sm text-roseDark">
+        <p className="mt-1 text-sm text-brandDark">
           {mode === "hebrew" ? `לועזי: ${value}` : `📅 עברי: ${toHebrewDate(value)}`}
         </p>
       )}

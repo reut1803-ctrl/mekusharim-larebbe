@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "../components/Logo";
+import { IconLock } from "../components/Icons";
 
 // מסך פתיחה. המערכת סגורה: אין הרשמה עצמית של מועמדים,
 // והכניסה היחידה היא כניסת צוות לנציגים מורשים.
@@ -14,10 +15,10 @@ export default function HomePage() {
 
         <Link
           href="/admin"
-          className="card flex flex-col items-center gap-2 py-8 transition hover:border-rose hover:shadow-lg"
+          className="card flex flex-col items-center gap-2 py-8 transition hover:border-brand hover:shadow-lg"
         >
-          <span className="text-5xl leading-none">🔐</span>
-          <span className="text-xl font-semibold text-roseDark">כניסת צוות</span>
+          <IconLock className="h-11 w-11 text-brand" />
+          <span className="text-xl font-semibold text-brandDark">כניסת צוות</span>
           <span className="text-sm text-ink/50">למורשים בלבד</span>
         </Link>
 

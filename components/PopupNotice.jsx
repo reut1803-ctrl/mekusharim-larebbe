@@ -35,9 +35,9 @@ export default function PopupNotice({ popup, role }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={close}>
-      <div className="w-full max-w-md rounded-3xl bg-cream p-6 shadow-soft" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md rounded-3xl bg-ivory p-6 shadow-soft" onClick={(e) => e.stopPropagation()}>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-roseDark">📢 עדכון מהמערכת</h2>
+          <h2 className="text-xl font-bold text-brandDark">📢 עדכון מהמערכת</h2>
           <button onClick={close} className="text-2xl leading-none text-ink/50 hover:text-ink">×</button>
         </div>
 
@@ -46,8 +46,8 @@ export default function PopupNotice({ popup, role }) {
         )}
 
         {tip && (
-          <div className="rounded-2xl bg-blush/60 p-4">
-            <p className="mb-1 text-sm font-bold text-roseDark">💡 טיפ שדכנות</p>
+          <div className="rounded-2xl bg-parchment/60 p-4">
+            <p className="mb-1 text-sm font-bold text-brandDark">💡 טיפ שדכנות</p>
             <p className="whitespace-pre-wrap text-base text-ink/90">{tip}</p>
           </div>
         )}

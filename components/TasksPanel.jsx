@@ -26,7 +26,7 @@ export default function TasksPanel({ data, user, readOnly = false }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-roseDark">📝 משימות</h2>
+        <h2 className="text-lg font-bold text-brandDark">📝 משימות</h2>
         {!readOnly && <button className="btn-soft" onClick={() => setAdding(true)}>+ משימה חדשה</button>}
       </div>
 
@@ -34,12 +34,12 @@ export default function TasksPanel({ data, user, readOnly = false }) {
 
       {visibleTasks.map((t) => (
         <div key={t.id} className="card flex items-center gap-3">
-          <input type="checkbox" checked={t.done} disabled={readOnly} onChange={(e) => updateTask(t.id, { done: e.target.checked })} className="h-5 w-5 accent-rose" />
+          <input type="checkbox" checked={t.done} disabled={readOnly} onChange={(e) => updateTask(t.id, { done: e.target.checked })} className="h-5 w-5 accent-brand" />
           <div className="flex-1">
             <p className={`font-medium ${t.done ? "text-ink/40 line-through" : "text-ink"}`}>{t.title}</p>
             {t.dueDate && <p className="text-xs text-ink/50">תאריך יעד: {t.dueDate} · {toHebrewDate(t.dueDate)}</p>}
           </div>
-          {!readOnly && <button className="text-roseDark" onClick={() => deleteTask(t.id)}>🗑️</button>}
+          {!readOnly && <button className="text-brandDark" onClick={() => deleteTask(t.id)}>🗑️</button>}
         </div>
       ))}
 

@@ -29,7 +29,7 @@ export default function LogViewer({ data }) {
   return (
     <div className="card space-y-2">
       <button
-        className="flex w-full items-center justify-between text-lg font-bold text-roseDark"
+        className="flex w-full items-center justify-between text-lg font-bold text-brandDark"
         onClick={() => setOpen((v) => !v)}
       >
         <span>🧾 יומן פעילות</span>
@@ -41,9 +41,9 @@ export default function LogViewer({ data }) {
         <div className="max-h-96 space-y-1.5 overflow-y-auto pt-1">
           {logs.length === 0 && <p className="text-sm text-ink/40">אין רישומים עדיין.</p>}
           {logs.map((l) => (
-            <div key={l.id} className="rounded-xl bg-blush/40 px-3 py-2 text-sm">
+            <div key={l.id} className="rounded-xl bg-parchment/40 px-3 py-2 text-sm">
               <p className="text-ink/90">
-                <span className="font-semibold text-roseDark">{l.actor}</span> {l.action}
+                <span className="font-semibold text-brandDark">{l.actor}</span> {l.action}
               </p>
               <p className="text-xs text-ink/50">{fmt(l.at)}</p>
             </div>

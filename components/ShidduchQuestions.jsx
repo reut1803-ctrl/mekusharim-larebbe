@@ -61,8 +61,8 @@ export default function ShidduchQuestions({ data, isAdmin = false }) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-blush px-4 py-3">
-        <h2 className="text-lg font-bold text-roseDark">❓ איזה שאלות אני שואל בשידוך</h2>
+      <div className="rounded-2xl bg-parchment px-4 py-3">
+        <h2 className="text-lg font-bold text-brandDark">❓ איזה שאלות אני שואל בשידוך</h2>
         <p className="text-xs text-ink/60">
           {isAdmin
             ? "רשימת השאלות המשותפת לצוות. מה שתשמרי כאן — כל הנציגים יראו."
@@ -71,7 +71,7 @@ export default function ShidduchQuestions({ data, isAdmin = false }) {
       </div>
 
       {status && (
-        <div className="rounded-2xl bg-blush/60 px-4 py-2 text-center text-sm font-semibold text-roseDark">{status}</div>
+        <div className="rounded-2xl bg-parchment/60 px-4 py-2 text-center text-sm font-semibold text-brandDark">{status}</div>
       )}
 
       {/* תצוגת קריאה - לכל הצוות, וגם למנהלת כשאינה במצב עריכה */}
@@ -84,7 +84,7 @@ export default function ShidduchQuestions({ data, isAdmin = false }) {
           )}
           {questions.map((q, i) => (
             <div key={q.id} className="card flex gap-3">
-              <span className="font-bold text-rose">{i + 1}.</span>
+              <span className="font-bold text-brand">{i + 1}.</span>
               <p className="whitespace-pre-wrap text-lg leading-relaxed text-ink/90">{q.text}</p>
             </div>
           ))}
@@ -104,7 +104,7 @@ export default function ShidduchQuestions({ data, isAdmin = false }) {
                 <div className="flex gap-1">
                   <button className="btn-soft !px-3 !py-1 text-sm" onClick={() => move(i, -1)} disabled={i === 0}>↑</button>
                   <button className="btn-soft !px-3 !py-1 text-sm" onClick={() => move(i, 1)} disabled={i === questions.length - 1}>↓</button>
-                  <button className="btn-soft !px-3 !py-1 text-sm text-roseDark" onClick={() => remove(i)}>🗑️</button>
+                  <button className="btn-soft !px-3 !py-1 text-sm text-brandDark" onClick={() => remove(i)}>🗑️</button>
                 </div>
               </div>
               <textarea

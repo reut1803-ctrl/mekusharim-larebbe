@@ -13,6 +13,7 @@ import LogViewer from "../../components/LogViewer";
 import PopupEditor from "../../components/PopupEditor";
 import PopupNotice from "../../components/PopupNotice";
 import Logo from "../../components/Logo";
+import { IconCandidates, IconMatches, IconTasks, IconQuestions, IconManage } from "../../components/Icons";
 import { useData, useUser } from "../../lib/useData";
 import { setCurrentUser, addCandidate, updateCandidate, deleteCandidate, displayRep, getConnectionError, isDataReady, storageAvailable } from "../../lib/store";
 
@@ -67,7 +68,7 @@ function Login({ data }) {
         <div className="mb-2 flex justify-center">
           <Logo className="h-24 w-auto" />
         </div>
-        <h1 className="text-2xl font-bold text-roseDark">כניסת צוות</h1>
+        <h1 className="text-2xl font-bold text-brandDark">כניסת צוות</h1>
         <p className="text-sm text-ink/60">הקלד/י את הסיסמה שלך</p>
 
         {/* אזהרה מוקדמת אם יש בעיית אחסון/חיבור במכשיר */}
@@ -78,7 +79,7 @@ function Login({ data }) {
         )}
 
         {error && (
-          <div className="whitespace-pre-line rounded-2xl bg-rose/10 px-4 py-3 text-right text-sm font-medium text-roseDark">{error}</div>
+          <div className="whitespace-pre-line rounded-2xl bg-brand/10 px-4 py-3 text-right text-sm font-medium text-brandDark">{error}</div>
         )}
 
         <input
@@ -170,14 +171,14 @@ export default function AdminPage() {
   }
 
   // צופה רואה רק את המועמדים (קריאה בלבד); שאר הלשוניות מוסתרות ממנו.
-  const tabs = [{ id: "candidates", icon: "👤", label: "מועמדים" }];
+  const tabs = [{ id: "candidates", Icon: IconCandidates, label: "מועמדים" }];
   if (!isViewer) {
-    tabs.push({ id: "matches", icon: "💞", label: "התאמות" });
-    tabs.push({ id: "tasks", icon: "📝", label: "משימות" });
+    tabs.push({ id: "matches", Icon: IconMatches, label: "התאמות" });
+    tabs.push({ id: "tasks", Icon: IconTasks, label: "משימות" });
   }
   // "איזה שאלות אני שואל בשידוך" - כל הצוות קורא, המנהלת בלבד עורכת
-  tabs.push({ id: "questions", icon: "❓", label: "שאלות בשידוך" });
-  if (isAdmin) tabs.push({ id: "manage", icon: "⚙️", label: "ניהול" });
+  tabs.push({ id: "questions", Icon: IconQuestions, label: "שאלות בשידוך" });
+  if (isAdmin) tabs.push({ id: "manage", Icon: IconManage, label: "ניהול" });
 
   return (
     <div>
@@ -219,19 +220,19 @@ export default function AdminPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setCandView("new")}
-                className={`flex-1 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${candView === "new" ? "bg-rose text-white" : "bg-blush text-roseDark"}`}
+                className={`flex-1 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${candView === "new" ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}
               >✨ מועמדים חדשים</button>
               <button
                 onClick={() => setCandView("previous")}
-                className={`flex-1 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${candView === "previous" ? "bg-rose text-white" : "bg-blush text-roseDark"}`}
+                className={`flex-1 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${candView === "previous" ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}
               >מועמדים קודמים</button>
             </div>
 
             {/* מועמדים חדשים - 5 האחרונים שהצטרפו (בחיפוש מציגים את כל התוצאות) */}
             {candView === "new" && !term && (
               <section className="space-y-3">
-                <div className="rounded-2xl bg-blush px-4 py-2">
-                  <p className="font-bold text-roseDark">✨ המצטרפים החדשים</p>
+                <div className="rounded-2xl bg-parchment px-4 py-2">
+                  <p className="font-bold text-brandDark">✨ המצטרפים החדשים</p>
                   <p className="text-xs text-ink/60">חמשת המועמדים האחרונים שהצטרפו למאגר.</p>
                 </div>
                 {newCands.length === 0 && <p className="text-sm text-ink/40">אין מועמדים חדשים.</p>}
@@ -259,8 +260,8 @@ export default function AdminPage() {
               return (
                 <section key={rep.id} className="space-y-3">
                   {/* בראש העמודה: שם הנציג ושם המוסד */}
-                  <div className="rounded-2xl bg-blush px-4 py-2">
-                    <p className="font-bold text-roseDark">{rep.name}</p>
+                  <div className="rounded-2xl bg-parchment px-4 py-2">
+                    <p className="font-bold text-brandDark">{rep.name}</p>
                     <p className="text-xs text-ink/60">{rep.institution}</p>
                   </div>
                   {cands.length === 0 && <p className="text-sm text-ink/40">אין מועמדים משויכים.</p>}
@@ -333,15 +334,15 @@ export default function AdminPage() {
       )}
 
       {/* ניווט קבוע בתחתית העמוד - קטגוריות הפעולה */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-sand bg-cream/95 backdrop-blur">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-sand bg-ivory/95 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-stretch justify-around">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition ${tab === t.id ? "text-rose" : "text-ink/50"}`}
+              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition ${tab === t.id ? "text-brandDark" : "text-ink/45"}`}
             >
-              <span className="text-2xl leading-none">{t.icon}</span>
+              <t.Icon className="h-6 w-6" />
               <span>{t.label}</span>
             </button>
           ))}
