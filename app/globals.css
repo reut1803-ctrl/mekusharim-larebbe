@@ -8,8 +8,8 @@ html,
 body {
   padding: 0;
   margin: 0;
-  background-color: #faf6ee; /* ivory - הנייר החם של האיור */
-  color: #3d2e1c; /* ink */
+  background-color: #faf3f0; /* ivory */
+  color: #3e2f33; /* ink */
   -webkit-font-smoothing: antialiased;
 }
 

@@ -8,12 +8,14 @@ import CandidateEditor from "../../components/CandidateEditor";
 import MatchesPanel from "../../components/MatchesPanel";
 import TasksPanel from "../../components/TasksPanel";
 import ShidduchQuestions from "../../components/ShidduchQuestions";
+import SchedulePanel from "../../components/SchedulePanel";
+import BulkAssignBar from "../../components/BulkAssignBar";
 import RepsManager from "../../components/RepsManager";
 import LogViewer from "../../components/LogViewer";
 import PopupEditor from "../../components/PopupEditor";
 import PopupNotice from "../../components/PopupNotice";
 import Logo from "../../components/Logo";
-import { IconCandidates, IconMatches, IconTasks, IconQuestions, IconManage } from "../../components/Icons";
+import { IconCandidates, IconMatches, IconTasks, IconQuestions, IconManage, IconSchedule } from "../../components/Icons";
 import { useData, useUser } from "../../lib/useData";
 import { setCurrentUser, addCandidate, updateCandidate, deleteCandidate, displayRep, getConnectionError, isDataReady, storageAvailable } from "../../lib/store";
 
@@ -108,6 +110,13 @@ export default function AdminPage() {
   const [search, setSearch] = useState("");
   // לשונית משנה במסך המועמדים: "new" = 5 החדשים; "previous" = השאר. ברירת מחדל - חדשים.
   const [candView, setCandView] = useState("new");
+  // סימון מרובה לשיוך קבוצתי
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const toggleSelect = (id) =>
+    setSelectedIds((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  const clearSelection = () => setSelectedIds([]);
+  const exitSelectMode = () => { setSelectMode(false); setSelectedIds([]); };
 
   if (!data) return <main className="p-8 text-center text-ink/50">טוען…</main>;
   if (!user) return <Login data={data} />;
@@ -177,6 +186,7 @@ export default function AdminPage() {
     tabs.push({ id: "tasks", Icon: IconTasks, label: "משימות" });
   }
   // "איזה שאלות אני שואל בשידוך" - כל הצוות קורא, המנהלת בלבד עורכת
+  if (!isViewer) tabs.push({ id: "schedule", Icon: IconSchedule, label: "לו״ז ראיונות" });
   tabs.push({ id: "questions", Icon: IconQuestions, label: "שאלות בשידוך" });
   if (isAdmin) tabs.push({ id: "manage", Icon: IconManage, label: "ניהול" });
 
@@ -216,6 +226,16 @@ export default function AdminPage() {
               )}
             </div>
 
+            {/* סימון מרובה ← שיוך קבוצתי לשדכנית או לקבוצה */}
+            {!isViewer && !myReadOnly && (
+              <button
+                className={`w-full rounded-2xl px-4 py-2.5 text-sm font-bold transition ${selectMode ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}
+                onClick={() => (selectMode ? exitSelectMode() : setSelectMode(true))}
+              >
+                {selectMode ? "✕ סיום סימון" : "☑️ סימון מרובה ושיוך לקבוצה"}
+              </button>
+            )}
+
             {/* לשוניות משנה: מועמדים חדשים / מועמדים קודמים */}
             <div className="flex gap-2">
               <button
@@ -248,6 +268,9 @@ export default function AdminPage() {
                       isAdmin={isAdmin}
                       onUpdate={updateCandidate}
                       onDelete={isAdmin ? deleteCandidate : undefined}
+                      selectable={selectMode}
+                      selected={selectedIds.includes(c.id)}
+                      onToggleSelect={toggleSelect}
                     />
                   ))}
                 </div>
@@ -277,6 +300,9 @@ export default function AdminPage() {
                         isAdmin={isAdmin}
                         onUpdate={updateCandidate}
                         onDelete={isAdmin ? deleteCandidate : undefined}
+                        selectable={selectMode}
+                        selected={selectedIds.includes(c.id)}
+                        onToggleSelect={toggleSelect}
                       />
                     ))}
                   </div>
@@ -302,6 +328,9 @@ export default function AdminPage() {
                       isAdmin={isAdmin}
                       onUpdate={updateCandidate}
                       onDelete={isAdmin ? deleteCandidate : undefined}
+                      selectable={selectMode}
+                      selected={selectedIds.includes(c.id)}
+                      onToggleSelect={toggleSelect}
                     />
                   ))}
                 </div>
@@ -310,6 +339,7 @@ export default function AdminPage() {
           </div>
         )}
 
+        {tab === "schedule" && !isViewer && <SchedulePanel data={data} user={user} />}
         {tab === "questions" && <ShidduchQuestions data={data} isAdmin={isAdmin} />}
         {tab === "matches" && <MatchesPanel data={data} user={user} readOnly={myReadOnly} />}
         {tab === "tasks" && <TasksPanel data={data} user={user} readOnly={myReadOnly} />}
@@ -321,6 +351,15 @@ export default function AdminPage() {
           </div>
         )}
       </main>
+
+      {selectMode && selectedIds.length > 0 && (
+        <BulkAssignBar
+          selectedIds={selectedIds}
+          reps={data.reps}
+          onDone={clearSelection}
+          onClear={clearSelection}
+        />
+      )}
 
       {addingCand && (
         <Modal title="הוספת מועמד" onClose={() => setAddingCand(false)}>

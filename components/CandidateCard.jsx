@@ -5,13 +5,14 @@ import Modal from "./Modal";
 import CandidateEditor from "./CandidateEditor";
 import Recorder from "./Recorder";
 import PhoneActions from "./PhoneActions";
+import InterviewSummary from "./InterviewSummary";
 import { visibleFields, genderLabel } from "../lib/questions";
 
 import { copyClean, downloadPdf } from "../lib/export";
 import { displayRep } from "../lib/store";
 
 // כרטיס מועמד: תצוגה מקוצרת + תצוגה מורחבת (טופס מלא).
-export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitive, currentRepId, isAdmin = false, onUpdate, onDelete }) {
+export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitive, currentRepId, isAdmin = false, onUpdate, onDelete, selectable = false, selected = false, onToggleSelect }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -28,8 +29,21 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
   return (
     <>
       {/* כרטיס מקוצר */}
-      <div className="card cursor-pointer transition hover:shadow-lg" onClick={() => setOpen(true)}>
+      <div
+        className={`card cursor-pointer transition hover:shadow-lg ${selectable && selected ? "border-brand ring-2 ring-brand/25" : ""}`}
+        onClick={() => (selectable ? onToggleSelect(candidate.id) : setOpen(true))}
+      >
         <div className="flex items-center gap-3">
+          {selectable && (
+            <input
+              type="checkbox"
+              className="h-5 w-5 shrink-0 accent-brand"
+              checked={selected}
+              onChange={() => onToggleSelect(candidate.id)}
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`סימון ${candidate.fullName}`}
+            />
+          )}
           {candidate.photo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={candidate.photo} alt={candidate.fullName} className="h-14 w-14 rounded-2xl object-cover" />
@@ -42,6 +56,11 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
               {candidate.gender === "female" ? "בחורה" : "בחור"} · גיל {candidate.age}
             </p>
             <p className="truncate text-xs text-ink/50">נציג: {rep ? rep.name : "ללא שיוך"}</p>
+            {candidate.group && (
+              <span className="mt-1 inline-block rounded-full bg-sageSoft px-2 py-0.5 text-[11px] font-semibold text-sage">
+                {candidate.group}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -71,6 +90,7 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
                   </p>
                 ))}
                 <p className="text-lg"><span className="font-bold">שיוך נציג:</span> {rep ? `${rep.name} (${rep.institution})` : "ללא שיוך"}</p>
+                {candidate.group && <p className="text-lg"><span className="font-bold">קבוצה:</span> {candidate.group}</p>}
               </div>
 
               {/* הטלפון של המועמד - גלוי לנציג/ה שמייצג/ת אותו ולמנהלת, ליצירת קשר מיידית */}
@@ -120,6 +140,9 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
                   <p className="whitespace-pre-wrap text-sm text-ink/80">{candidate.sensitiveInfo || "—"}</p>
                 </div>
               )}
+
+              {/* סיכום הראיון של השדכנית - נשמר ומוצג בכרטיס */}
+              <InterviewSummary candidate={candidate} canEdit={canEdit} />
 
               {/* הקלטות קוליות - כל הצוות מאזין; רק הנציג של המועמד והמנהלת מקליטים/מוחקים */}
               <Recorder candidateId={candidate.id} repId={currentRepId} canRecord={canEdit} />

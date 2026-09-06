@@ -110,6 +110,32 @@ export default function Recorder({ candidateId, repId, canRecord = false }) {
     setSaving(false);
   }
 
+  // העלאת קובץ הקלטה קיים מהמכשיר (למשל הקלטה שנעשתה באפליקציה אחרת)
+  async function onUpload(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // מאפשר להעלות שוב את אותו קובץ
+    if (!file) return;
+    setError("");
+    if (file.size > MAX_BYTES) {
+      setError("הקובץ כבד מדי לשמירה (עד כ-1MB). אפשר להעלות הקלטה קצרה יותר.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      await addRecording({
+        candidateId,
+        repId,
+        mime: file.type || "audio/mpeg",
+        durationSec: 0,
+        bytes,
+      });
+    } catch (err) {
+      setError("העלאת ההקלטה נכשלה. בדקו חיבור ונסו שוב.");
+    }
+    setSaving(false);
+  }
+
   async function play(id, mime) {
     if (urls[id]) return; // כבר נטען
     setLoadingId(id);
@@ -146,7 +172,7 @@ export default function Recorder({ candidateId, repId, canRecord = false }) {
           <div key={r.id} className="rounded-xl bg-surface p-2">
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-ink/70">
-                🎧 הקלטה {i + 1} · {fmt(r.durationSec || 0)}
+                🎧 הקלטה {i + 1}{r.durationSec ? ` · ${fmt(r.durationSec)}` : ""}
                 {r.createdAt ? ` · ${new Date(r.createdAt).toLocaleDateString("he-IL")}` : ""}
               </span>
               {canRecord && <button className="text-brandDark" onClick={() => remove(r.id)}>🗑️</button>}
@@ -177,6 +203,10 @@ export default function Recorder({ candidateId, repId, canRecord = false }) {
               </button>
             )}
           </div>
+          <label className="btn-soft mt-2 w-full cursor-pointer !py-2 text-sm">
+            📎 העלאת הקלטה מהמכשיר
+            <input type="file" accept="audio/*" className="hidden" onChange={onUpload} />
+          </label>
           <p className="mt-1 text-xs text-ink/50">עד 10 דקות להקלטה. אפשר להוסיף כמה הקלטות שרוצים.</p>
         </>
       )}

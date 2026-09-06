@@ -70,3 +70,13 @@ export function IconLock({ className }) {
     </Svg>
   );
 }
+
+export function IconSchedule({ className }) {
+  return (
+    <Svg className={className}>
+      <rect x="3.6" y="5" width="16.8" height="15.2" rx="2.6" />
+      <path d="M3.6 9.4h16.8M8.4 3.4v3.2M15.6 3.4v3.2" />
+      <path d="M8 13.2h3.2M8 16.6h6.6" />
+    </Svg>
+  );
+}
