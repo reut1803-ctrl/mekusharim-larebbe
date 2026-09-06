@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "מקושרים לרבי",
-  description: "מקושרים לרבי — שאלון היכרות ומערכת ניהול מועמדים",
+  title: "חיבורים ללב",
+  description: "חיבורים ללב — מערכת ניהול מועמדות ושידוכים",
 };
 
 export default function RootLayout({ children }) {

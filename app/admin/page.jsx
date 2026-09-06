@@ -10,6 +10,7 @@ import TasksPanel from "../../components/TasksPanel";
 import ShidduchQuestions from "../../components/ShidduchQuestions";
 import SchedulePanel from "../../components/SchedulePanel";
 import BulkAssignBar from "../../components/BulkAssignBar";
+import MidrashotBoard from "../../components/MidrashotBoard";
 import RepsManager from "../../components/RepsManager";
 import LogViewer from "../../components/LogViewer";
 import PopupEditor from "../../components/PopupEditor";
@@ -108,8 +109,6 @@ export default function AdminPage() {
   const [tab, setTab] = useState("candidates");
   const [addingCand, setAddingCand] = useState(false);
   const [search, setSearch] = useState("");
-  // לשונית משנה במסך המועמדים: "new" = 5 החדשים; "previous" = השאר. ברירת מחדל - חדשים.
-  const [candView, setCandView] = useState("new");
   // סימון מרובה לשיוך קבוצתי
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -162,14 +161,28 @@ export default function AdminPage() {
     .filter((c) => canViewCandidate(c))
     .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
   const newIds = new Set(viewableSorted.slice(0, 5).map((c) => c.id));
-  const newCands = viewableSorted.filter((c) => newIds.has(c.id) && matchSearch(c));
+  const searchResults = viewableSorted.filter((c) => matchSearch(c));
 
-  // "ללא שיוך" כולל מועמדים ללא נציג, נציג שנמחק, או נציג בחופשה ללא מחליף/ה (כדי שלא ייעלמו לעולם).
-  // בתצוגת "קודמים" מחריגים את 5 החדשים (הם מופיעים בלשונית "חדשים").
-  const unassigned = data.candidates.filter((c) => {
-    const dr = displayRep(c, data.reps);
-    return (!dr || !visibleRepIds.has(dr.id)) && (term || !newIds.has(c.id)) && matchSearch(c) && canViewCandidate(c);
-  });
+
+  // רינדור אחיד של כרטיס מועמדת - כולל ההרשאות ומצב הסימון המרובה
+  function candidateCard(c) {
+    return (
+      <CandidateCard
+        key={c.id}
+        candidate={c}
+        reps={data.reps}
+        canEdit={canEditOf(c)}
+        canSeeSensitive={canSeeSensitiveOf(c)}
+        currentRepId={user.repId || "admin"}
+        isAdmin={isAdmin}
+        onUpdate={updateCandidate}
+        onDelete={isAdmin ? deleteCandidate : undefined}
+        selectable={selectMode}
+        selected={selectedIds.includes(c.id)}
+        onToggleSelect={toggleSelect}
+      />
+    );
+  }
 
   async function handleAdd(form) {
     // נציג שמוסיף מועמד - משויך אליו אוטומטית אם לא נבחר אחרת.
@@ -236,105 +249,21 @@ export default function AdminPage() {
               </button>
             )}
 
-            {/* לשוניות משנה: מועמדים חדשים / מועמדים קודמים */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setCandView("new")}
-                className={`flex-1 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${candView === "new" ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}
-              >✨ מועמדים חדשים</button>
-              <button
-                onClick={() => setCandView("previous")}
-                className={`flex-1 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${candView === "previous" ? "bg-brand text-white" : "bg-parchment text-brandDark"}`}
-              >מועמדים קודמים</button>
-            </div>
-
-            {/* מועמדים חדשים - 5 האחרונים שהצטרפו (בחיפוש מציגים את כל התוצאות) */}
-            {candView === "new" && !term && (
+            {/* לוח המדרשות: כרטיסיות בגלילה לרוחב, ומתחת - הבנות של המדרשה הנבחרת.
+                בחיפוש מציגים רשימה שטוחה של כל התוצאות. */}
+            {term ? (
               <section className="space-y-3">
-                <div className="rounded-2xl bg-parchment px-4 py-2">
-                  <p className="font-bold text-brandDark">✨ המצטרפים החדשים</p>
-                  <p className="text-xs text-ink/60">חמשת המועמדים האחרונים שהצטרפו למאגר.</p>
-                </div>
-                {newCands.length === 0 && <p className="text-sm text-ink/40">אין מועמדים חדשים.</p>}
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {newCands.map((c) => (
-                    <CandidateCard
-                      key={c.id}
-                      candidate={c}
-                      reps={data.reps}
-                      canEdit={canEditOf(c)}
-                      canSeeSensitive={canSeeSensitiveOf(c)}
-                      currentRepId={user.repId || "admin"}
-                      isAdmin={isAdmin}
-                      onUpdate={updateCandidate}
-                      onDelete={isAdmin ? deleteCandidate : undefined}
-                      selectable={selectMode}
-                      selected={selectedIds.includes(c.id)}
-                      onToggleSelect={toggleSelect}
-                    />
-                  ))}
-                </div>
+                <p className="text-sm font-semibold text-brandDark">תוצאות חיפוש ({searchResults.length})</p>
+                {searchResults.length === 0 && <p className="text-sm text-ink/40">לא נמצאו מועמדות.</p>}
+                <div className="grid gap-3 sm:grid-cols-2">{searchResults.map((c) => candidateCard(c))}</div>
               </section>
-            )}
-
-            {(candView === "previous" || term) && visibleReps.map((rep) => {
-              const cands = data.candidates.filter((c) => displayRep(c, data.reps)?.id === rep.id && (term || !newIds.has(c.id)) && matchSearch(c) && canViewCandidate(c));
-              if (term && cands.length === 0) return null;
-              return (
-                <section key={rep.id} className="space-y-3">
-                  {/* בראש העמודה: שם הנציג ושם המוסד */}
-                  <div className="rounded-2xl bg-parchment px-4 py-2">
-                    <p className="font-bold text-brandDark">{rep.name}</p>
-                    <p className="text-xs text-ink/60">{rep.institution}</p>
-                  </div>
-                  {cands.length === 0 && <p className="text-sm text-ink/40">אין מועמדים משויכים.</p>}
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {cands.map((c) => (
-                      <CandidateCard
-                        key={c.id}
-                        candidate={c}
-                          reps={data.reps}
-                        canEdit={canEditOf(c)}
-                        canSeeSensitive={canSeeSensitiveOf(c)}
-                        currentRepId={user.repId || "admin"}
-                        isAdmin={isAdmin}
-                        onUpdate={updateCandidate}
-                        onDelete={isAdmin ? deleteCandidate : undefined}
-                        selectable={selectMode}
-                        selected={selectedIds.includes(c.id)}
-                        onToggleSelect={toggleSelect}
-                      />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-
-            {/* מועמדים ללא שיוך נציג (בתצוגת קודמים או בחיפוש) */}
-            {(candView === "previous" || term) && unassigned.length > 0 && (
-              <section className="space-y-3">
-                <div className="rounded-2xl bg-sand px-4 py-2">
-                  <p className="font-bold text-ink">ללא שיוך נציג</p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {unassigned.map((c) => (
-                    <CandidateCard
-                      key={c.id}
-                      candidate={c}
-                      reps={data.reps}
-                      canEdit={isAdmin}
-                      canSeeSensitive={isAdmin}
-                      currentRepId={user.repId || "admin"}
-                      isAdmin={isAdmin}
-                      onUpdate={updateCandidate}
-                      onDelete={isAdmin ? deleteCandidate : undefined}
-                      selectable={selectMode}
-                      selected={selectedIds.includes(c.id)}
-                      onToggleSelect={toggleSelect}
-                    />
-                  ))}
-                </div>
-              </section>
+            ) : (
+              <MidrashotBoard
+                candidates={viewableSorted}
+                reps={data.reps}
+                newIds={newIds}
+                renderCard={candidateCard}
+              />
             )}
           </div>
         )}

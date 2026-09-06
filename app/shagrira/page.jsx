@@ -4,7 +4,7 @@ import AmbassadorForm from "../../components/AmbassadorForm";
 // עמוד עצמאי שאינו מקושר ממסך הפתיחה - הכתובת נשלחת לשגרירות ישירות,
 // כך שהמערכת עצמה נשארת סגורה מאחורי כניסת צוות.
 export const metadata = {
-  title: "רישום מועמדות · מקושרים לרבי",
+  title: "בנות מדרשה · חיבורים ללב",
 };
 
 export default function ShagriraPage() {
