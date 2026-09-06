@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Logo from "./Logo";
+import { IconHeart } from "./Icons";
 import { compressImage } from "../lib/image";
 import { addCandidatesFromAmbassador } from "../lib/store";
 import { AMBASSADOR_REQUIRED } from "../lib/questions";
@@ -135,27 +136,41 @@ export default function AmbassadorForm() {
     }
   }
 
+  // מסך הסיום - מוצג מיד אחרי שליחה מוצלחת
   if (done > 0) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center px-5 py-12 text-center">
-        <Logo className="h-44 w-auto" withName />
-        <div className="card w-full max-w-md space-y-3">
-          <p className="text-5xl">🌸</p>
-          <h1 className="text-2xl font-bold text-brandDark">תודה רבה!</h1>
-          <p className="text-lg leading-relaxed text-ink/80">
-            {done === 1 ? "הכרטיס נשלח בהצלחה" : `${done} הכרטיסים נשלחו בהצלחה`} וכבר נמצא/ים אצל הצוות.
+      <main className="flex min-h-screen flex-col items-center justify-center px-5 py-12">
+        <div className="card w-full max-w-md space-y-5 text-center">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-parchment">
+            <IconHeart className="h-9 w-9 text-brand" />
+          </div>
+
+          <h1 className="text-3xl font-bold text-ink">קיבלנו את הפרטים</h1>
+
+          <p className="text-lg leading-relaxed text-ink/65">
+            תודה שספרתם לנו עליכם. הפרטים הגיעו לצוות המשרד, ואנחנו נעבור עליהם
+            באופן אישי. ניצור אתכם קשר בהקדם.
           </p>
-          <button
-            className="btn-soft w-full"
-            onClick={() => {
-              setGirls([blank()]);
-              setDone(0);
-              setSending(false);
-            }}
-          >
-            שליחת כרטיסים נוספים
-          </button>
+
+          <div className="rounded-2xl bg-parchment/70 px-5 py-4">
+            <p className="text-base leading-relaxed text-ink/60">
+              הפרטים שמסרתם שומרים אצלנו בדיסקרטיות מלאה ואינם נחשפים לאף גורם
+              מחוץ לצוות.
+            </p>
+          </div>
         </div>
+
+        {/* אפשרות להמשיך לקבוצה נוספת, מבלי להעמיס על ההודעה עצמה */}
+        <button
+          className="mt-6 text-sm font-medium text-brand underline-offset-4 hover:underline"
+          onClick={() => {
+            setGirls([blank()]);
+            setDone(0);
+            setSending(false);
+          }}
+        >
+          שליחת כרטיסים נוספים
+        </button>
       </main>
     );
   }

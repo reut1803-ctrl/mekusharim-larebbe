@@ -80,3 +80,12 @@ export function IconSchedule({ className }) {
     </Svg>
   );
 }
+
+// לב מלא - מסך הסיום של הטופס החיצוני
+export function IconHeart({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill="currentColor">
+      <path d="M12 20.6s-7.6-4.6-7.6-9.6a4.2 4.2 0 0 1 7.6-2.5 4.2 4.2 0 0 1 7.6 2.5c0 5-7.6 9.6-7.6 9.6z" />
+    </svg>
+  );
+}
