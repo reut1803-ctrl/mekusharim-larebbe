@@ -9,8 +9,8 @@ export default function HomePage() {
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-10">
       <div className="w-full max-w-md text-center">
         {/* לוגו נקי וללא רקע, ממורכז בראש העמוד */}
-        <div className="mb-10 flex justify-center">
-          <Logo className="w-72 max-w-[85%]" />
+        <div className="mb-8 flex justify-center">
+          <Logo className="h-56 w-auto max-w-[70%]" withName tagline="מערכת ניהול מועמדות ושידוכים" />
         </div>
 
         <Link

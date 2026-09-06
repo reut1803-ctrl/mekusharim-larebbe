@@ -69,7 +69,7 @@ function Login({ data }) {
     <main className="flex min-h-screen flex-col items-center justify-center px-6">
       <form onSubmit={tryLogin} className="w-full max-w-sm space-y-4 text-center">
         <div className="mb-2 flex justify-center">
-          <Logo className="h-24 w-auto" />
+          <Logo className="h-40 w-auto" withName />
         </div>
         <h1 className="text-2xl font-bold text-brandDark">כניסת צוות</h1>
         <p className="text-sm text-ink/60">הקלד/י את הסיסמה שלך</p>

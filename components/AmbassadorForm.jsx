@@ -124,7 +124,7 @@ export default function AmbassadorForm() {
   if (done > 0) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center px-5 py-12 text-center">
-        <Logo className="mb-8 w-56 max-w-[70%]" />
+        <Logo className="h-44 w-auto" withName />
         <div className="card w-full max-w-md space-y-3">
           <p className="text-5xl">🌸</p>
           <h1 className="text-2xl font-bold text-brandDark">תודה רבה!</h1>
@@ -148,8 +148,8 @@ export default function AmbassadorForm() {
 
   return (
     <main className="mx-auto max-w-xl px-4 py-8 pb-32">
-      <div className="mb-6 text-center">
-        <Logo className="mx-auto mb-4 w-52 max-w-[65%]" />
+      <div className="mb-6 flex flex-col items-center text-center">
+        <Logo className="h-36 w-auto" withName />
         <h1 className="text-2xl font-bold text-brandDark">בנות מדרשה</h1>
         <p className="mt-1 text-sm leading-relaxed text-ink/60">
           אפשר למלא כמה בנות ברצף באותו מסך — כפתור ״הוספת בת נוספת״ פותח כרטיס חדש,
