@@ -10,7 +10,7 @@ import TasksPanel from "../../components/TasksPanel";
 import ShidduchQuestions from "../../components/ShidduchQuestions";
 import SchedulePanel from "../../components/SchedulePanel";
 import BulkAssignBar from "../../components/BulkAssignBar";
-import MidrashotBoard from "../../components/MidrashotBoard";
+import GroupsBoard from "../../components/GroupsBoard";
 import RepsManager from "../../components/RepsManager";
 import LogViewer from "../../components/LogViewer";
 import PopupEditor from "../../components/PopupEditor";
@@ -165,9 +165,10 @@ export default function AdminPage() {
 
 
   // רינדור אחיד של כרטיס מועמדת - כולל ההרשאות ומצב הסימון המרובה
-  function candidateCard(c) {
+  function candidateCard(c, isNew = false) {
     return (
       <CandidateCard
+        isNew={isNew}
         key={c.id}
         candidate={c}
         reps={data.reps}
@@ -258,12 +259,7 @@ export default function AdminPage() {
                 <div className="grid gap-3 sm:grid-cols-2">{searchResults.map((c) => candidateCard(c))}</div>
               </section>
             ) : (
-              <MidrashotBoard
-                candidates={viewableSorted}
-                reps={data.reps}
-                newIds={newIds}
-                renderCard={candidateCard}
-              />
+              <GroupsBoard candidates={viewableSorted} newIds={newIds} renderCard={candidateCard} />
             )}
           </div>
         )}

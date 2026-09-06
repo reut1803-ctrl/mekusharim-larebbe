@@ -18,11 +18,18 @@ const FIELDS = [
   { key: "phone", label: "מספר טלפון", type: "tel", inputMode: "tel" },
 ];
 
+// פרטי הקבוצה שבראש הטופס - הם עוגנת הקבוצה שתחתיה נרשמות הבנות.
+const GROUP_FIELDS = [
+  { key: "midrasha", label: "שם המדרשה ומיקום", placeholder: "לדוגמה: מדרשת אור · ירושלים" },
+  { key: "contactName", label: "אשת קשר", placeholder: "שם מלא" },
+  { key: "contactPhone", label: "טלפון", type: "tel", inputMode: "tel" },
+];
+
 const DRAFT_KEY = `${STORAGE_PREFIX}ambassador_draft`;
 const blank = () => ({ uid: `g${Date.now()}${Math.random().toString(36).slice(2, 7)}` });
 
 export default function AmbassadorForm() {
-  const [ambassador, setAmbassador] = useState("");
+  const [group, setGroup] = useState({ midrasha: "", contactName: "", contactPhone: "" });
   const [girls, setGirls] = useState([blank()]);
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
@@ -37,7 +44,7 @@ export default function AmbassadorForm() {
         const d = JSON.parse(raw);
         if (d && Array.isArray(d.girls) && d.girls.length) {
           setGirls(d.girls);
-          setAmbassador(d.ambassador || "");
+          if (d.group) setGroup({ midrasha: "", contactName: "", contactPhone: "", ...d.group });
         }
       }
     } catch (e) {}
@@ -45,9 +52,9 @@ export default function AmbassadorForm() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ ambassador, girls }));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ group, girls }));
     } catch (e) {}
-  }, [ambassador, girls]);
+  }, [group, girls]);
 
   function setField(i, key, value) {
     setGirls((g) => g.map((x, idx) => (idx === i ? { ...x, [key]: value } : x)));
@@ -81,6 +88,9 @@ export default function AmbassadorForm() {
 
   function validate() {
     const errs = {};
+    GROUP_FIELDS.forEach((f) => {
+      if (!String(group[f.key] || "").trim()) errs[`group:${f.key}`] = true;
+    });
     girls.forEach((g, i) => {
       AMBASSADOR_REQUIRED.forEach((k) => {
         if (!String(g[k] || "").trim()) errs[`${i}:${k}`] = true;
@@ -110,7 +120,11 @@ export default function AmbassadorForm() {
         phone: g.phone.trim(),
         photo: g.photo || "",
       }));
-      await addCandidatesFromAmbassador(payload, ambassador.trim());
+      await addCandidatesFromAmbassador(payload, {
+        midrasha: group.midrasha.trim(),
+        contactName: group.contactName.trim(),
+        contactPhone: group.contactPhone.trim(),
+      });
       try {
         localStorage.removeItem(DRAFT_KEY);
       } catch (e) {}
@@ -157,14 +171,34 @@ export default function AmbassadorForm() {
         </p>
       </div>
 
-      <div className="card mb-5">
-        <label className="field-label">שם השגרירה (לא חובה)</label>
-        <input
-          className="field-input"
-          value={ambassador}
-          onChange={(e) => setAmbassador(e.target.value)}
-          placeholder="כדי שנדע ממי הגיעו הכרטיסים"
-        />
+      <div className="card mb-5 space-y-4">
+        <div className="border-b border-sand pb-2">
+          <h2 className="font-bold text-brandDark">פרטי הקבוצה</h2>
+          <p className="text-xs text-ink/55">הבנות שיוזנו מטה ישויכו לקבוצה הזו.</p>
+        </div>
+        {GROUP_FIELDS.map((f) => {
+          const bad = !!errors[`group:${f.key}`];
+          return (
+            <div key={f.key} data-invalid={bad ? "true" : "false"}>
+              <label className="field-label">
+                {f.label} <span className="text-brand">*</span>
+              </label>
+              <input
+                className={`field-input ${bad ? "border-brand ring-2 ring-brand/20" : ""}`}
+                type={f.type || "text"}
+                inputMode={f.inputMode}
+                placeholder={f.placeholder || ""}
+                value={group[f.key] || ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setGroup((g) => ({ ...g, [f.key]: v }));
+                  setErrors((er) => (er[`group:${f.key}`] ? { ...er, [`group:${f.key}`]: false } : er));
+                }}
+              />
+              {bad && <p className="mt-1 text-sm font-medium text-brand">שדה חובה</p>}
+            </div>
+          );
+        })}
       </div>
 
       {girls.map((g, i) => (

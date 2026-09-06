@@ -10,7 +10,7 @@ const OG_IMAGE = {
   alt: "חיבורים ללב",
   type: "image/jpeg",
 };
-const DESCRIPTION = "מערכת ניהול מועמדות ושידוכים";
+const DESCRIPTION = "המעטפת בשידוכים לבנות מדרשה";
 
 export const metadata = {
   metadataBase: new URL(SITE),

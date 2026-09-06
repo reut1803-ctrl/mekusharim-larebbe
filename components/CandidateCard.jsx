@@ -12,7 +12,7 @@ import { copyClean, downloadPdf } from "../lib/export";
 import { displayRep } from "../lib/store";
 
 // כרטיס מועמד: תצוגה מקוצרת + תצוגה מורחבת (טופס מלא).
-export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitive, currentRepId, isAdmin = false, onUpdate, onDelete, selectable = false, selected = false, onToggleSelect }) {
+export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitive, currentRepId, isAdmin = false, onUpdate, onDelete, selectable = false, selected = false, onToggleSelect, isNew = false }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -51,7 +51,14 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-parchment text-2xl">👤</div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="truncate font-semibold text-ink">{candidate.fullName}</p>
+            <div className="flex items-center gap-1.5">
+              <p className="truncate font-semibold text-ink">{candidate.fullName}</p>
+              {isNew && (
+                <span className="shrink-0 rounded-full bg-sageSoft px-1.5 py-0.5 text-[10px] font-bold text-sage">
+                  חדשה
+                </span>
+              )}
+            </div>
             <p className="text-sm text-ink/60">
               {candidate.gender === "female" ? "בחורה" : "בחור"} · גיל {candidate.age}
             </p>

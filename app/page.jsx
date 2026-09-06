@@ -10,7 +10,7 @@ export default function HomePage() {
       <div className="w-full max-w-md text-center">
         {/* לוגו נקי וללא רקע, ממורכז בראש העמוד */}
         <div className="mb-8 flex justify-center">
-          <Logo className="h-56 w-auto max-w-[70%]" withName tagline="מערכת ניהול מועמדות ושידוכים" />
+          <Logo className="h-56 w-auto max-w-[70%]" withName tagline="המעטפת בשידוכים לבנות מדרשה" />
         </div>
 
         <Link
