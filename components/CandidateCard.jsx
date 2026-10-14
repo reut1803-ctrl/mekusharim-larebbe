@@ -6,6 +6,7 @@ import CandidateEditor from "./CandidateEditor";
 import Recorder from "./Recorder";
 import PhoneActions from "./PhoneActions";
 import InterviewSummary from "./InterviewSummary";
+import DownloadPhotoButton from "./DownloadPhotoButton";
 import { visibleFields, genderLabel } from "../lib/questions";
 
 import { copyClean, downloadPdf } from "../lib/export";
@@ -87,8 +88,11 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
           ) : (
             <div className="space-y-4">
               {candidate.photo && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={candidate.photo} alt={candidate.fullName} className="h-32 w-32 rounded-2xl object-cover" />
+                <div className="flex flex-col items-start gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={candidate.photo} alt={candidate.fullName} className="h-32 w-32 rounded-2xl object-cover" />
+                  <DownloadPhotoButton src={candidate.photo} name={candidate.fullName} suffix="תמונה" />
+                </div>
               )}
               <div className="space-y-2">
                 {visibleFields(false).map((f) => (
@@ -134,8 +138,16 @@ export default function CandidateCard({ candidate, reps, canEdit, canSeeSensitiv
                     </div>
                   )}
                   {candidate.cardImage && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={candidate.cardImage} alt="כרטיס מועמד" className="w-full rounded-2xl border border-sand object-contain" />
+                    <div className="space-y-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={candidate.cardImage} alt="כרטיס מועמד" className="w-full rounded-2xl border border-sand object-contain" />
+                      <DownloadPhotoButton
+                        src={candidate.cardImage}
+                        name={candidate.fullName}
+                        suffix="כרטיס"
+                        label="הורדת הכרטיס"
+                      />
+                    </div>
                   )}
                 </div>
               )}

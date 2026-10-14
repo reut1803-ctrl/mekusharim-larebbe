@@ -89,3 +89,13 @@ export function IconHeart({ className }) {
     </svg>
   );
 }
+
+// חץ הורדה - כפתור הורדת תמונה בכרטיס המועמדת
+export function IconDownload({ className }) {
+  return (
+    <Svg className={className}>
+      <path d="M12 4.2v10.2M8.2 10.8l3.8 3.8 3.8-3.8" />
+      <path d="M4.8 17.6v1.2a1.6 1.6 0 0 0 1.6 1.6h11.2a1.6 1.6 0 0 0 1.6-1.6v-1.2" />
+    </Svg>
+  );
+}
